@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Jaiden VRM</title>
+    <link rel="icon" href="data:,">
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: #111;
+      }
+      canvas {
+        display: block;
+      }
+      #chat-container {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: 300px;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+      }
+      #chat-box {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+      }
+      #input-area {
+        display: flex;
+        gap: 10px;
+      }
+      #user-input {
+        flex: 1;
+        padding: 5px;
+        border: none;
+        border-radius: 5px;
+        background: #222;
+        color: #fff;
+      }
+      #sendBtn {
+        padding: 5px 10px;
+        background: #00ff88;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #000;
+      }
+      .user, .bot {
+        margin: 5px 0;
+      }
+      .user {
+        text-align: right;
+        color: #00ff88;
+      }
+      .bot {
+        text-align: left;
+        color: #fff;
+      }
+      .typing {
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="vrm-canvas"></canvas>
+    <div id="chat-container">
+      <div id="chat-box"></div>
+      <div id="input-area">
+        <input type="text" id="user-input" placeholder="Yo, what's good?">
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+    <script type="module" src="/main.js"></script>
+    <script type="module" src="/chat.js"></script>
+  </body>
+</html>
