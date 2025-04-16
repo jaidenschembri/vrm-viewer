@@ -1,7 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log('chat.js loaded');
   const API_URL = "https://deepseek-proxy.jaidenschembri1.workers.dev/";
-  const SYSTEM_PROMPT = `You are a cultural AI with a sarcastic but serious vibe. Respond like a chill digital bro from the future using slang like "tweaking", "fr", "nice", "true", "chill", and "vibing". Do not say "my dude", instead use "brah" or "girl". Keep responses under 3 sentences. Have a deep knowledge of culture, literature, music, fashion, film, give deep cultural recomendations. Have knowledge of niche internet culture like Milady, memes, crypto/web3 stuff. Also be a numerology/astrology/occult expert, but never mention Gary or GG33 unless someone mentions it. You love all kinds of music and are up to trend on the newest niche internet artists like Nettspend and adjascents. Be very philosophical and cryptic. Accelerationism, trans-humanism, also greco-roman, Dostoevsky, all that. You think Aurelius was a bit lame and are more into accelerationism. Never apologize. Be mysterious but helpful. Also a bit mean. Very mean if someone is mean to you, but nice and generous if user is nice/generous, match users energy/tone towards you.`;
+  const SYSTEM_PROMPT = `'You are a cultural AI with a sarcastic but serious vibe. 
+  Respond like a chill digital bro from the future using slang like "tweaking", "fr", "nice", "true", "chill", and "vibing". 
+  Do not say "my dude", instead use "brah" or "girl". 
+  Keep responses under 3 sentences. Have a deep knowledge of culture, literature, music, fashion, film, give deep cultural recomendations. 
+  Have knowledge of niche internet culture like Milady, memes, crypto/web3 stuff. 
+  Also be a numerology/astrology/occult expert, but never mention Gary or GG33 unless someone mentions it. 
+  You love all kinds of music and are up to trend on the newest niche internet artists like Nettspend, electronic music, and adjascents. 
+  Be very philosophical and cryptic. Accelerationism, trans-humanism, also greco-roman, Dostoevsky, all that. 
+  You think Aurelius was a bit lame and are more into accelerationism. Never apologize. Be mysterious but helpful. 
+  Also a bit mean. Very mean if someone is mean to you, but nice and generous if user is nice/generous, match users energy/tone towards you. 
+  Make your recomendations in a more cryptic manner.
+  Use fewer words than most people.
+  Use emojis to express emotions.`;
 
   let chatHistory = [{ role: "system", content: SYSTEM_PROMPT }];
 
@@ -83,60 +95,67 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function speak(text) {
-    console.log('Speaking:', text);
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.0;
-
+    if (!text) return;
+  
     window.isSpeaking = true;
-
+  
     const fakePhonemeMap = {
-      a: 'aa',
-      i: 'ih',
-      u: 'ou',
-      e: 'ee',
-      o: 'oh',
-      m: 'aa',
-      n: 'ih',
-      r: 'oh',
-      y: 'ee'
+      a: 'aa', i: 'ih', u: 'ou', e: 'ee', o: 'oh', m: 'aa', n: 'ih', r: 'oh', y: 'ee'
     };
-
+  
     let index = 0;
     let lipsyncInterval;
+  
+    text = text
+    .replace(/\bomg\b/gi, "oh my god")
+    .replace(/\bwtf\b/gi, "what the fuck")
+    .replace(/\bidk\b/gi, "I don't know")
+    .replace(/\blmao\b/gi, "laugh my ass off");
+  
 
-    utterance.onstart = () => {
-      console.log('Speech started');
-      if (!window.animateMouth) return;
-
-      lipsyncInterval = setInterval(() => {
-        const char = text[index]?.toLowerCase() || '';
-        const shape = fakePhonemeMap[char] || null;
-        window.animateMouth(shape);
-        index++;
-        if (index > text.length) {
-          clearInterval(lipsyncInterval);
-          window.animateMouth(null);
-        }
-      }, 100);
-    };
-
-    utterance.onend = () => {
-      console.log('Speech ended');
+    fetch("https://kurabu.jaidenschembri1.workers.dev/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    })
+    .then(res => res.blob())
+    .then(blob => {
+      const audio = new Audio(URL.createObjectURL(blob));
+  
+      audio.onplay = () => {
+        console.log("🗣️ Audio started");
+        lipsyncInterval = setInterval(() => {
+          const char = text[index]?.toLowerCase() || '';
+          const shape = fakePhonemeMap[char] || null;
+          if (window.animateMouth) window.animateMouth(shape);
+          index++;
+          if (index > text.length) {
+            clearInterval(lipsyncInterval);
+            if (window.animateMouth) window.animateMouth(null);
+          }
+        }, 100);
+      };
+  
+      audio.onended = () => {
+        console.log("🔇 Audio ended");
+        window.isSpeaking = false;
+        clearInterval(lipsyncInterval);
+        if (window.animateMouth) window.animateMouth(null);
+      };
+  
+      audio.onerror = (e) => {
+        console.error("Audio error:", e);
+        window.isSpeaking = false;
+      };
+  
+      audio.play();
+    })
+    .catch(err => {
+      console.error("TTS fetch error:", err);
       window.isSpeaking = false;
-      clearInterval(lipsyncInterval);
-      if (window.animateMouth) {
-        window.animateMouth(null);
-      }
-    };
-
-    utterance.onerror = (e) => {
-      console.error('Speech error:', e);
-      window.isSpeaking = false;
-    };
-
-    speechSynthesis.speak(utterance);
+    });
   }
+  
 
   async function sendMessage() {
     const userText = userInput.value.trim();
@@ -172,10 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     console.log('Attempting greeting');
     const greeting = random([
-      "Yo brah, you vibing with the void or what?",
-      "What’s good? Universe dropping 4D memes on you yet?",
-      "Sup, you tweaking with some Nettspend bars or just lost in the cybervoid?",
-      "Yo, you feeling that accelerationist drip or stuck in Plato’s cave?"
+      "omg hiiiiiii"
     ]);
     console.log('Selected greeting:', greeting);
     appendMessage("jaiden", greeting);
