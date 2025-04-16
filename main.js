@@ -40,16 +40,27 @@ const loader = new GLTFLoader();
 loader.register((parser) => new VRMLoaderPlugin(parser));
 
 loader.load(import.meta.env.BASE_URL + 'characters/kurabu.vrm', (gltf) => {
+  
   console.log('✅ GLTF loaded:', gltf);
   VRMUtils.removeUnnecessaryJoints(gltf.scene);
 
   vrm = gltf.userData.vrm;
-  headBone = vrm.humanoid.getNormalizedBoneNode('head');
+  const leftUpperArm = vrm.humanoid.getNormalizedBoneNode('leftUpperArm');
+const leftLowerArm = vrm.humanoid.getNormalizedBoneNode('leftLowerArm');
+const rightUpperArm = vrm.humanoid.getNormalizedBoneNode('rightUpperArm');
+const rightLowerArm = vrm.humanoid.getNormalizedBoneNode('rightLowerArm');
 
-  if (!vrm) {
-    console.error('❌ No VRM found in gltf.userData');
-    return;
-  }
+if (leftUpperArm && rightUpperArm && leftLowerArm && rightLowerArm) {
+  console.log("✅ Applying final relaxed pose");
+
+  // 🦴 Drop upper arms down along Z axis
+  leftUpperArm.rotation.z = THREE.MathUtils.degToRad(-65);   // arm hangs down at side
+  rightUpperArm.rotation.z = THREE.MathUtils.degToRad(65);
+
+  // 💪 Slight elbow bend so arms don’t look stiff
+  leftLowerArm.rotation.z = THREE.MathUtils.degToRad(-15);
+  rightLowerArm.rotation.z = THREE.MathUtils.degToRad(15);
+}
 
   scene.add(vrm.scene);
 
@@ -176,8 +187,16 @@ function updateFloat(delta) {
   vrm.scene.position.y = floatY;
 }
 
-// 🎥 Animation loop with eye, head, float, idle
 function animate() {
+
+  // 🌬️ Subtle breathing motion
+if (vrm && vrm.scene) {
+  const t = performance.now() * 0.001;
+  const breath = 0.01 * Math.sin(t * 1.5); // amplitude and speed
+  vrm.scene.position.y = breath;
+}
+
+
   requestAnimationFrame(animate);
   const delta = clock.getDelta();
 
