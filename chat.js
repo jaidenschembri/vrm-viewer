@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       { emotion: 'happy', keywords: ['lol', 'lmao', 'haha', 'funny', 'joke', 'based', 'fire', 'fr', 'love that', 'blessed'] },
       { emotion: 'surprised', keywords: ['wtf', 'what', 'huh', 'no way', 'whoa', '?!', 'omg'] },
       { emotion: 'sad', keywords: ['sad', 'pain', 'tragic', 'rip', 'bruh', 'down bad', 'depressing'] },
-      { emotion: 'angry', keywords: ['mad', 'angry', 'rage', 'furious', 'pissed', 'why', 'hate', 'annoying'] },
+      { emotion: 'angry', keywords: ['mad', 'angry', 'rage', 'pissed', 'furious', 'pissed', 'why', 'hate', 'annoying'] },
       { emotion: 'relaxed', keywords: ['chill', 'relax', 'vibe', 'laid back', 'cozy', 'breeze'] }
     ];
   
