@@ -39,7 +39,7 @@ let clock = new THREE.Clock();
 const loader = new GLTFLoader();
 loader.register((parser) => new VRMLoaderPlugin(parser));
 
-loader.load('/characters/kurabu.vrm', (gltf) => {
+loader.load(import.meta.env.BASE_URL + 'characters/kurabu.vrm', (gltf) => {
   console.log('✅ GLTF loaded:', gltf);
   VRMUtils.removeUnnecessaryJoints(gltf.scene);
 

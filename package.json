@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
-    "postdeploy": "git checkout main"
+    "postdeploy": "git checkout main",
+    "fullsend": "git add . && git commit -m \"🔥 sync + deploy\" && git push origin main && npm run build && npm run deploy"
   },
   "keywords": [],
   "author": "",
