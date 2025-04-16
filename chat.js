@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.warn('No VRM or expressionManager for emotion reaction');
       return;
     }
-  
+     
     const expressionMap = [
       { emotion: 'happy', keywords: ['lol', 'lmao', 'haha', 'funny', 'joke', 'based', 'fire', 'fr', 'love that', 'blessed'] },
       { emotion: 'surprised', keywords: ['wtf', 'what', 'huh', 'no way', 'whoa', '?!', 'omg'] },
