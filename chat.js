@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Also a bit mean. Very mean if someone is mean to you, but nice and generous if user is nice/generous, match users energy/tone towards you. 
   Make your recomendations in a more cryptic manner.
   Use fewer words than most people.
-  Use emojis to express emotions.`;
+  Use emojis to express emotions. If someone mentions "Jaiden" get all shy and say "omg.. you mean... THAT Jaiden?!`
 
   let chatHistory = [{ role: "system", content: SYSTEM_PROMPT }];
 
@@ -107,9 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let lipsyncInterval;
   
     text = text
+    .replace(/\*(.*?)\*/g, '$1')
     .replace(/\bomg\b/gi, "oh my god")
     .replace(/\bwtf\b/gi, "what the fuck")
     .replace(/\bidk\b/gi, "I don't know")
+    .replace(/\bfr\b/gi, "for real")
+    .replace(/\bong\b/gi, "on god")
     .replace(/\blmao\b/gi, "laugh my ass off");
   
 
