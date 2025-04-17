@@ -8,14 +8,11 @@ const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true;
-if (/Mobi|Android/i.test(navigator.userAgent)) {
-  renderer.shadowMap.enabled = false;
-}
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0, 0.9, 2.3);
+camera.position.set(0, 0.9, 2.);
 
 // 💡 Lighting
 const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
@@ -35,26 +32,15 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0.7, 0);
 controls.update();
 
-// 📱 Mobile OrbitControls restrictions
-if (/Mobi|Android/i.test(navigator.userAgent)) {
-  controls.enableZoom = false;
-  controls.enablePan = false;
-  controls.minPolarAngle = Math.PI / 3;
-  controls.maxPolarAngle = Math.PI / 2;
-}
-
 let vrm = null;
 let headBone = null;
-let waveTime = 0;
-let isWaving = true;
 let clock = new THREE.Clock();
 
 const loader = new GLTFLoader();
 loader.register((parser) => new VRMLoaderPlugin(parser));
 
 loader.load(import.meta.env.BASE_URL + 'characters/kurabu.vrm', (gltf) => {
-  document.getElementById('loading-screen')?.remove(); // ✅ hide loading screen
-
+  
   console.log('✅ GLTF loaded:', gltf);
   VRMUtils.removeUnnecessaryJoints(gltf.scene);
 
@@ -190,7 +176,7 @@ function updateIdleAnimation(delta) {
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight, false);
+  renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 // 💫 Floating motion function
@@ -217,36 +203,33 @@ if (vrm && vrm.scene) {
   if (vrm) {
     if (vrm.update) vrm.update(delta);
     if (vrm.lookAt) vrm.lookAt.update();
-  
+
     updateFloat(delta); // 💫 Floating animation
-  
+
     // 👤 Head follows camera
-    // 👤 Subtle head follow
-if (headBone) {
-  const headWorldPos = new THREE.Vector3();
-  const camWorldPos = new THREE.Vector3();
-  headBone.getWorldPosition(headWorldPos);
-  camera.getWorldPosition(camWorldPos);
+    if (headBone) {
+      const headWorldPos = new THREE.Vector3();
+      const camWorldPos = new THREE.Vector3();
+      headBone.getWorldPosition(headWorldPos);
+      camera.getWorldPosition(camWorldPos);
 
-  const direction = camWorldPos.clone().sub(headWorldPos);
-  const yaw = Math.atan2(direction.x, direction.z);
-  const pitch = Math.atan2(direction.y, direction.length());
+      const direction = camWorldPos.clone().sub(headWorldPos);
+      const yaw = Math.atan2(direction.x, direction.z);
+      const pitch = Math.atan2(direction.y, direction.length());
 
-  const maxYaw = THREE.MathUtils.degToRad(10); // 🌀 subtle side turn
-  const maxPitch = THREE.MathUtils.degToRad(5); // 🌀 subtle nod
+      const maxYaw = THREE.MathUtils.degToRad(30);
+      const maxPitch = THREE.MathUtils.degToRad(10);
+      const clampedYaw = THREE.MathUtils.clamp(yaw, -maxYaw, maxYaw);
+      const clampedPitch = THREE.MathUtils.clamp(pitch, -maxPitch, maxPitch);
 
-  const clampedYaw = THREE.MathUtils.clamp(yaw, -maxYaw, maxYaw);
-  const clampedPitch = THREE.MathUtils.clamp(pitch, -maxPitch, maxPitch);
+      const targetQuat = new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(clampedPitch, clampedYaw, 0, 'YXZ')
+      );
 
-  const targetQuat = new THREE.Quaternion().setFromEuler(
-    new THREE.Euler(clampedPitch, clampedYaw, 0, 'YXZ')
-  );
-
-  headBone.quaternion.slerp(targetQuat, 0.05); // slower follow
-}
-
+      headBone.quaternion.slerp(targetQuat, 0.1);
+    }
   }
-  
+
   updateIdleAnimation(delta);
   renderer.render(scene, camera);
 }
@@ -281,9 +264,4 @@ window.testEmotions = () => {
       console.log('✅ Emotion cycle complete');
     }
   }, 1200);
-};
-
-window.toggleWave = () => {
-  isWaving = !isWaving;
-  console.log('🖐️ Wave mode:', isWaving ? 'ON' : 'OFF');
 };
