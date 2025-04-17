@@ -1,0 +1,96 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #111;
+    font-family: 'Press Start 2P', monospace;
+  }
+  
+  canvas {
+    display: block;
+  }
+  
+  /* 🖥️ Desktop Chat Styles */
+  #chat-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 340px;
+    max-height: 50vh;
+    background: rgba(0, 0, 0, 0.75);
+    border: 2px solid #00ff88;
+    border-radius: 10px;
+    padding: 10px;
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    z-index: 10;
+  }
+  
+  #chat-box {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  #input-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  #user-input {
+    flex: 1;
+    padding: 6px;
+    border: 2px solid #00ff88;
+    border-radius: 6px;
+    background: #111;
+    color: #fff;
+  }
+  
+  #sendBtn {
+    padding: 6px 10px;
+    background: #00ff88;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  #sendBtn:hover {
+    background: #00cc6a;
+  }
+  
+  /* 💬 Bubble Style */
+  .user, .bot {
+    max-width: 90%;
+    padding: 8px 10px;
+    border-radius: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .user {
+    align-self: flex-end;
+    background: #00ff88;
+    color: #000;
+    border-bottom-right-radius: 0;
+  }
+  
+  .bot {
+    align-self: flex-start;
+    background: #222;
+    color: #fff;
+    border-bottom-left-radius: 0;
+  }
+  
+  .typing {
+    font-style: italic;
+    opacity: 0.6;
+  }
+  
